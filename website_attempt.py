@@ -32,15 +32,19 @@ data_types = ['heart_rate', 'temperature', 'emg_data', 'gps_data']
 # Set interval for fetching data (in seconds)
 interval = 2
 
+# Get user input for name and exercise
+name, exercise = get_user_input()
+user_folder = os.path.join('data', name)
+exercise_folder = os.path.join(user_folder, exercise)
+
+if not os.path.exists(exercise_folder):
+    os.makedirs(exercise_folder, exist_ok=True)
+
 # Run the data fetching in a loop
 while True:
-    name, exercise = get_user_input()
-    output_folder = os.path.join('data_', name)
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
     for data_type in data_types:
         url_csv = f"{base_url}{data_type}"
-        output_file = os.path.join(output_folder, f"{data_type}_{name}_{exercise}.csv")
+        output_file = os.path.join(exercise_folder, f"{data_type}_{name}_{exercise}.csv")
         fetch_csv_data(url_csv, output_file)
     # Wait for the specified interval
     time.sleep(interval)
