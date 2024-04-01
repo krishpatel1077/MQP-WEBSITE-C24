@@ -6,7 +6,7 @@ import pandas as pd
 import time
 
 # Define the IP address and EMG data URL
-ip_address = '192.168.105.245'
+ip_address = '192.168.196.245'
 emg_data_url = f'http://{ip_address}/emg_data'
 
 def fetch_csv_data(url_csv, output_file):
