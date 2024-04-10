@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Plots</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            color: #333;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .section {
+            background-color: #293241;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px;
+            width: auto;
+            height: auto;
+            max-width: 800px;
+        }
+
+        h1, h2, h3, p {
+            color: #fff;
+            text-align: center;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .data {
+            font-size: 28px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .col {
+            flex-grow: 1;
+            text-align: center;
+            padding: 20px;
+            max-width: 400px;
+        }
+        
+        .col.rsp {
+            flex-basis: 50%;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="section">
+        <h1>EMG Signals</h1>
+        <img src="emg_emg.png" alt="EMG Plots">
+    </div>
+    <div class="section">
+        <h1>Heart Rate</h1>
+        <img src="ecg_jennifer.png" alt="Heart Rate Plot">
+    </div>
+    <div class="section">
+        <h1>Biometrics</h1>
+        <h2>Average Velocity: <h2/>
+        <h2 class="data">7.64 m/s</h2>
+        <h2>Average Temperature: </h2>
+        <h2 class="data">38.34 °C</h2>
+        <h2>Average BPM: </h2>
+        <h2 class="data">119.61 BPM</h2>
+    </div>
+    <div class="section">
+        <h2>Respiratory Rate Graphs</h2>
+        <div class="row">
+            <div class="col rsp">
+                <h3>EDR Signal (Neurokit)</h3>
+                <img src="edr_signal_resp.png" alt="EDR Signal (Neurokit)">
+            </div>
+            <div class="col rsp">
+                <h3>Respiratory Rate (Nuerokit)</h3>
+                <img src="rsp_rate_resp.png" alt="Respiratory Rate (Nuerokit)">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

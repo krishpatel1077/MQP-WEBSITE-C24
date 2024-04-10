@@ -3,19 +3,14 @@ import csv
 from io import StringIO
 import matplotlib.pyplot as plt
 import time
-import neurokit2 as nk
 import pandas as pd
 
 def fetch_csv_data(url_csv, output_file):
     try:
         response_csv = requests.get(url_csv)
         if response_csv.status_code == 200:
-            csv_data = StringIO(response_csv.text)
-            reader = csv.reader(csv_data)
             with open(output_file, 'a', newline='') as csvfile:
-                csv_writer = csv.writer(csvfile)
-                for row in reader:
-                    csv_writer.writerow(row)
+                csvfile.write(response_csv.text)
             print(f"Data has been successfully written to {output_file}")
         else:
             print(f"Error: Unable to fetch CSV data. Status code: {response_csv.status_code}")
@@ -24,28 +19,31 @@ def fetch_csv_data(url_csv, output_file):
     except requests.RequestException as e:
         print(f"Error: {e}")
 
-def plot_csv_data(input_file, plot_number, bpm, max_points=1000):
+def plot_csv_data(input_file, plot_number, max_points=1000):
     timestamps = []
-    heart_rates = []
+    emg_data = [[] for _ in range(3)]  # Create empty lists for each EMG sensor
     try:
         with open(input_file, 'r') as csvfile:
             reader = csv.reader(csvfile)
             for row in reader:
                 timestamps.append(int(row[0]))
-                heart_rates.append(float(row[1]))
+                for i in range(1, len(row)):  # Skip the first column (time)
+                    emg_data[i - 1].append(float(row[i]))
 
         if len(timestamps) > max_points:
             timestamps = timestamps[-max_points:]
-            heart_rates = heart_rates[-max_points:]
+            emg_data = [sensor[-max_points:] for sensor in emg_data]
 
         plt.close()
-        plt.plot(timestamps, heart_rates, linestyle='-')
-        plt.title(f'Heart Rate Over Time - BPM: {bpm.mean()}')
+        for i, sensor_data in enumerate(emg_data, start=1):
+            plt.plot(timestamps, sensor_data, linestyle='-', label=f'EMG {i}')
+
+        plt.title(f'EMG Data Plot {plot_number}')
         plt.xlabel('Timestamp (ms)')
-        plt.ylabel('ECG')
-        plt.text(timestamps[-1], heart_rates[-1], f'BPM: {bpm.mean()}', ha='right', va='bottom', color='red')
-        plt.savefig(f'plot.png')
-        print(f"Plot saved as plot.png")
+        plt.ylabel('Value')
+        plt.legend()
+        plt.savefig(f'plot{plot_number}.png')
+        print(f"Plot saved as plot{plot_number}.png")
     except FileNotFoundError:
         print(f"Error: The file '{input_file}' does not exist.")
     except Exception as e:
@@ -58,7 +56,7 @@ def generate_html():
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="refresh" content="10">
-        <title>Heart Rate Plot</title>
+        <title>Data Plots</title>
         <style>
             body {
                 margin: 0;
@@ -77,7 +75,9 @@ def generate_html():
         </style>
     </head>
     <body>
-        <img src="plot.png" alt="Heart Rate Plot">
+        <img src="plot1.png" alt="Plot 1">
+        <img src="plot2.png" alt="Plot 2">
+        <img src="plot3.png" alt="Plot 3">
     </body>
     </html>
     """
@@ -85,30 +85,25 @@ def generate_html():
     with open('index.html', 'w') as html_file:
         html_file.write(html_code)
 
-def save_bpm_to_csv(bpm, output_file):
-    try:
-        with open(output_file, 'a', newline='') as csvfile:
-            csv_writer = csv.writer(csvfile)
-            csv_writer.writerow([time.time(), bpm.mean()])
-        print(f"BPM measurements saved to {output_file}")
-    except Exception as e:
-        print(f"Error: {e}")
-
-url_csv = 'http://192.168.105.245/heart_rate'
-output_file = 'heart_rate.csv'
-bpm_output_file = 'bpm_measurements.csv'
-input_file = 'heart_rate.csv'
+url_csv_heart_rate = 'http://192.168.105.245/heart_rate'
+url_csv_emg = 'http://192.168.105.245/emg_data_jennifer_20pass.csv'
+output_file_heart_rate = 'heart_rate.csv'
+output_file_emg = 'emg_data.csv'
 sampling_rate = 75
 
 interval = 2
-initial_csv = requests.get(url_csv)
+
+# Initial fetch
+initial_csv_heart_rate = requests.get(url_csv_heart_rate)
+initial_csv_emg = requests.get(url_csv_emg)
+
 while True:
-    fetch_csv_data(url_csv, output_file)
-    data = pd.read_csv(output_file, header=None)
-    data.columns = ["Time", "ECG"]
-    r_peaks = nk.ecg_findpeaks(data["ECG"], sampling_rate=sampling_rate)
-    bpm = nk.ecg_rate(r_peaks, sampling_rate=sampling_rate, desired_length=len(data))
-    plot_csv_data(input_file, 2, bpm)
+    fetch_csv_data(url_csv_heart_rate, output_file_heart_rate)
+    fetch_csv_data(url_csv_emg, output_file_emg)
+
+    plot_csv_data(output_file_heart_rate, 1)
+    plot_csv_data(output_file_emg, 2)
+
     generate_html()
-    save_bpm_to_csv(bpm, bpm_output_file)
+
     time.sleep(interval)
