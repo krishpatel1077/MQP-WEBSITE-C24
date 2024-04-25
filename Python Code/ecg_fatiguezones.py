@@ -11,11 +11,11 @@ def fatigue_score(bpm):
     highest_nonfatigue_HR = max_HR * 0.77
     lowest_fatigue_HR = max_HR * 0.77
 
-    return (bpm)/max_HR * 100
+    return (bpm) / max_HR * 100
 
 # Step 1: Read the CSV file
 # Load CSV file
-data = pd.read_csv("heart_rate_jennifer_dribble.csv", header=None)
+data = pd.read_csv("Output files/csv files/ecg/heart_rate_subject6_baseline.csv", header=None)
 # Rename columns
 data.columns = ["Time", "ECG"]
 # Sampling rate
@@ -48,15 +48,15 @@ for i, ax in enumerate(axes.flatten()):
 
         # Plot individual graphs for each chunk
         ax.plot(chunk_data, color=colors[int(np.digitize(chunk_score, [64, 77]))])  # Color code signal
-        ax.set_xlabel('Sample #')
-        ax.set_ylabel('Amplitude (mV)')
-        ax.set_title(f'Chunk {i+1} - ECG Signal & Fatigue Score')
+        ax.set_xlabel('Sample #', fontsize=14)
+        ax.set_ylabel('Amplitude (mV)', fontsize=14)
+        ax.set_title(f'Chunk {i+1} - ECG Signal & Fatigue Score', fontsize=16)
         ax.grid(True)
 
         # Display fatigue score and BPM on each subplot
-        ax.text(0.05, 0.95, f"Score: {chunk_score:.4f}", transform=ax.transAxes, fontsize=12,
+        ax.text(0.05, 0.05, f"Score: {chunk_score:.4f}", transform=ax.transAxes, fontsize=16, fontweight='bold',
                 bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
-        ax.text(0.05, 0.85, f"BPM: {average_bpm:.2f}", transform=ax.transAxes, fontsize=12,
+        ax.text(0.65, 0.05, f"BPM: {average_bpm:.2f}", transform=ax.transAxes, fontsize=16, fontweight='bold',
                 bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
 
 

@@ -1,0 +1,6 @@
+Chunk 1 - Score: 43.0815, BPM: 85.30
+Chunk 2 - Score: 45.3211, BPM: 89.74
+Chunk 3 - Score: 41.2702, BPM: 81.72
+Chunk 4 - Score: 45.9181, BPM: 90.92
+Chunk 5 - Score: 42.4722, BPM: 84.09
+Chunk 6 - Score: 48.5234, BPM: 96.08
